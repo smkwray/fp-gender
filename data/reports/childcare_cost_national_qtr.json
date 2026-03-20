@@ -1,0 +1,14 @@
+{
+  "annual_observation_count": 15,
+  "base_year": 2008,
+  "carryforward_observation_count": 28,
+  "forecast_ready_end": "2029.4",
+  "latest_observed_period": "2022.4",
+  "latest_observed_value": 0.3822631465660111,
+  "max_value": 0.3822631465660111,
+  "min_value": 0.0,
+  "observed_quarterly_observation_count": 60,
+  "price_column": "mcinfant",
+  "quarterly_observation_count": 88,
+  "source_year": 2022
+}

@@ -1,0 +1,48 @@
+{
+  "presets": [
+    {
+      "id": "headline-macro",
+      "label": "Headline Macro",
+      "variables": [
+        "L2",
+        "UR",
+        "PCY",
+        "GDPR",
+        "PIEF"
+      ]
+    },
+    {
+      "id": "policy-inputs",
+      "label": "Policy Inputs",
+      "variables": [
+        "GCCOST",
+        "GCSUB",
+        "GPFL",
+        "GTAXWD"
+      ]
+    },
+    {
+      "id": "mothers-split",
+      "label": "Mothers Split",
+      "variables": [
+        "L2M",
+        "L2N",
+        "L2",
+        "UR",
+        "GDPR",
+        "PIEF"
+      ]
+    },
+    {
+      "id": "gender-exposure",
+      "label": "Gender Exposure",
+      "variables": [
+        "GMOTHSHR",
+        "GMWEDGE",
+        "L2M",
+        "L2N"
+      ]
+    }
+  ],
+  "schema_version": 1
+}

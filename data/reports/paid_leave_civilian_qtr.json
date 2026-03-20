@@ -1,0 +1,29 @@
+{
+  "annual_observation_count": 14,
+  "base_year": 2010,
+  "carryforward_observation_count": 24,
+  "forecast_ready_end": "2029.4",
+  "forecast_shift": 0.05,
+  "latest_observed_period": "2023.4",
+  "latest_observed_value": 0.27,
+  "max_value": 0.27,
+  "min_value": 0.11,
+  "observed_quarterly_observation_count": 56,
+  "ownership": "civilian",
+  "quarterly_observation_count": 80,
+  "series_ids": {
+    "civilian": "NBU18700000000000033349",
+    "private_industry": "NBU28700000000000033349",
+    "state_local_government": "NBU38700000000000033349"
+  },
+  "source_detail": {
+    "mode": "api",
+    "series_ids": {
+      "civilian": "NBU18700000000000033349",
+      "private_industry": "NBU28700000000000033349",
+      "state_local_government": "NBU38700000000000033349"
+    }
+  },
+  "source_name": "bls_nb_paid_family_leave_api",
+  "source_year": 2023
+}

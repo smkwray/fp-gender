@@ -1,0 +1,193 @@
+{
+  "annual_observation_count": 19,
+  "backfill_observation_count": 212,
+  "base_year": 2005,
+  "carryforward_observation_count": 20,
+  "concept": "Share of females ages 25-54 in households with own children under 18, excluding PAOC='0' group-quarters / not-applicable records from the denominator.",
+  "estimation_panel": {
+    "column_count": 39,
+    "csv_path": "omitted_in_public_export:mothers_estimation_panel.csv",
+    "dataset": "mothers_estimation_panel",
+    "latest_observed_mother_inputs_period": "2024.4",
+    "model_path": "omitted_in_public_export:fmdata.txt",
+    "mother_inputs_observed_rows": 76,
+    "period_end": "2024.4",
+    "period_start": "1952.1",
+    "recommended_estimation_rows": 76,
+    "required_model_variables": [
+      "AH",
+      "MH",
+      "KH",
+      "PKH",
+      "TRGH",
+      "TRSH",
+      "POP",
+      "PH",
+      "EX",
+      "L2",
+      "POP2",
+      "UR"
+    ],
+    "row_count": 292
+  },
+  "filled_annual_observation_count": 20,
+  "forecast_ready_end": "2029.4",
+  "history_start_period": "1952.1",
+  "latest_observed_period": "2024.4",
+  "latest_observed_value": 0.4725580648150933,
+  "max_value": 0.5117005440622181,
+  "min_value": 0.4725580648150933,
+  "mother_lfpr_latest_observed_value": 0.7746321299538906,
+  "mother_non_mother_log_wedge_latest_observed_value": -0.07547919949310888,
+  "non_mother_lfpr_latest_observed_value": 0.8353639057055906,
+  "observed_quarterly_observation_count": 80,
+  "ols_research": {
+    "dataset": "mothers_split_ols",
+    "deck_path": "omitted_in_public_export:gmcoef.txt",
+    "equations": {
+      "mother": {
+        "coefficients": {
+          "LAAZ_L1": -0.0019412675533183764,
+          "LL2MZ_L1": 0.952046605962121,
+          "T": 3.53320487693462e-05,
+          "UR_L1": -0.08094680015520428,
+          "const": -0.007429724573604062
+        },
+        "features": [
+          "T",
+          "LL2MZ_L1",
+          "LAAZ_L1",
+          "UR_L1"
+        ],
+        "n_obs": 76,
+        "r_squared": 0.9517667297009936,
+        "rank": 5,
+        "rss": 0.0008702391308481665,
+        "singular_values": [
+          2201.0015020074775,
+          3.5400673688598987,
+          0.2644721914743905,
+          0.09063780514845073,
+          0.06964750787082336
+        ],
+        "target": "LL2MZ"
+      },
+      "non_mother": {
+        "coefficients": {
+          "LAAZ_L1": 0.00489469526254433,
+          "LL2NZ_L1": 0.9432443179884462,
+          "T": 9.457113900722671e-06,
+          "UR_L1": -0.0418716156721588,
+          "const": -0.04154843148636225
+        },
+        "features": [
+          "T",
+          "LL2NZ_L1",
+          "LAAZ_L1",
+          "UR_L1"
+        ],
+        "n_obs": 76,
+        "r_squared": 0.9531372232096577,
+        "rank": 5,
+        "rss": 0.000738673028281459,
+        "singular_values": [
+          2201.0007227683127,
+          3.531350704014817,
+          0.2678851773300333,
+          0.09848248174631423,
+          0.0681514284231167
+        ],
+        "target": "LL2NZ"
+      }
+    },
+    "panel_csv_path": "omitted_in_public_export:mothers_estimation_panel.csv",
+    "report_path": "omitted_in_public_export:mothers_split_ols.json"
+  },
+  "quarterly_observation_count": 312,
+  "source_detail": {
+    "api_dataset": "acs1/pums",
+    "cache_files": [
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2005.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2006.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2007.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2008.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2009.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2010.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2011.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2012.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2013.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2014.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2015.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2016.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2017.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2018.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2019.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2021.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2022.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2023.json",
+      "omitted_in_public_export:acs1_pums_paoc_esr_f25_54_2024.json"
+    ],
+    "esr_codes": {
+      "excluded": [
+        "0"
+      ],
+      "labor_force": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "not_in_labor_force": [
+        "6"
+      ]
+    },
+    "missing_years": [
+      2020
+    ],
+    "mode": "api_tabulate",
+    "observed_years": [
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "paoc_codes": {
+      "excluded": [
+        "0"
+      ],
+      "mother": [
+        "1",
+        "2",
+        "3"
+      ],
+      "non_mother": [
+        "4"
+      ]
+    },
+    "query": "tabulate=weight(PWGTP)&row+PAOC&col+ESR&SEX=2&AGEP=25:54"
+  },
+  "source_name": "census_acs1_pums_paoc_f25_54",
+  "source_year": 2024,
+  "structural_note": "This refresh now also materializes a mothers/non-mothers labor-force-rate log wedge from the same ACS PUMS source so the split overlay can seed historical L2M/L2N paths without a raw share decomposition.",
+  "wedge_carryforward_observation_count": 20,
+  "wedge_max_value": -0.07393667770169729,
+  "wedge_min_value": -0.09919696525674146,
+  "wedge_observed_quarterly_observation_count": 80,
+  "wedge_quarterly_observation_count": 312
+}

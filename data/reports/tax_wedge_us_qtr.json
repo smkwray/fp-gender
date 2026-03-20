@@ -1,0 +1,21 @@
+{
+  "annual_observation_count": 10,
+  "base_year": 2000,
+  "carryforward_observation_count": 20,
+  "filled_annual_observation_count": 25,
+  "forecast_ready_end": "2029.4",
+  "forecast_shift": 0.02,
+  "latest_observed_period": "2024.4",
+  "latest_observed_value": 0.143,
+  "max_value": 0.273,
+  "min_value": 0.143,
+  "observed_quarterly_observation_count": 100,
+  "quarterly_observation_count": 120,
+  "source_detail": {
+    "description": "Tax wedge as % of labour costs for a two-earner married couple with two children at 100% and 67% of average wage",
+    "mode": "embedded_table",
+    "table": "Table 6.6"
+  },
+  "source_name": "oecd_taxing_wages_2025_table_6_6",
+  "source_year": 2024
+}

@@ -1,0 +1,143 @@
+version: 1
+title: FP Gender Runs Explorer
+site_subpath: gender-runs
+hero_text: Gender-focused Fair model runs exported from fp-wraptr.
+top_links:
+  - label: fp-wraptr home
+    url: https://smkwray.github.io/fp-wraptr/
+  - label: fp-wraptr repo
+    url: https://github.com/smkwray/fp-wraptr
+  - label: fp-gender repo
+    url: https://github.com/smkwray/fp-gender
+runs:
+  - run_id: gender-childcare-observed-base
+    label: Childcare Observed Base
+    scenario_name: gender_childcare_base
+    summary: Observed/live childcare-cost base.
+    details:
+      - Uses the retained observed childcare cost path rather than a stock-equivalent zero base.
+  - run_id: gender-childcare-affordability-relief
+    label: Childcare Affordability Relief
+    scenario_name: gender_childcare_affordability_relief
+    summary: Lower childcare costs relative to the observed childcare base.
+  - run_id: gender-childcare-affordability-shock
+    label: Childcare Affordability Shock
+    scenario_name: gender_childcare_affordability_shock
+    summary: Higher childcare costs relative to the observed childcare base.
+  - run_id: gender-childcare-subsidy-base
+    label: Childcare Subsidy Base
+    scenario_name: gender_childcare_subsidy_base
+    summary: Stock-equivalent childcare-subsidy base.
+  - run_id: gender-childcare-subsidy-relief
+    label: Childcare Subsidy Relief
+    scenario_name: gender_childcare_subsidy_relief
+    summary: Positive childcare subsidy shock on the stock-equivalent base.
+  - run_id: gender-childcare-subsidy-shock
+    label: Childcare Subsidy Shock
+    scenario_name: gender_childcare_subsidy_shock
+    summary: Negative childcare subsidy shock on the stock-equivalent base.
+  - run_id: gender-childcare-package-base
+    label: Childcare Package Base
+    scenario_name: gender_childcare_package_base
+    summary: Stock-equivalent combined-childcare base.
+  - run_id: gender-childcare-package-cost-relief
+    label: Childcare Package Cost Relief
+    scenario_name: gender_childcare_package_cost_relief
+    summary: Cost relief only on the stock-equivalent childcare package base.
+  - run_id: gender-childcare-package-subsidy-relief
+    label: Childcare Package Subsidy Relief
+    scenario_name: gender_childcare_package_subsidy_relief
+    summary: Subsidy relief only on the stock-equivalent childcare package base.
+  - run_id: gender-childcare-package-combined-relief
+    label: Childcare Package Combined Relief
+    scenario_name: gender_childcare_package_combined_relief
+    summary: Cost and subsidy relief together on the stock-equivalent childcare package base.
+  - run_id: gender-paid-leave-base
+    label: Paid Leave Observed Base
+    scenario_name: gender_paid_leave_base
+    summary: Observed/live paid-leave coverage base.
+  - run_id: gender-paid-leave-relief
+    label: Paid Leave Relief
+    scenario_name: gender_paid_leave_relief
+    summary: Higher paid-leave coverage relative to the observed base.
+  - run_id: gender-paid-leave-shock
+    label: Paid Leave Shock
+    scenario_name: gender_paid_leave_shock
+    summary: Lower paid-leave coverage relative to the observed base.
+  - run_id: gender-caregiver-base
+    label: Caregiver Proxy Base
+    scenario_name: gender_caregiver_leave_base
+    summary: Observed/live caregiver-leave proxy base.
+    details:
+      - Uses the family-leave caregiver proxy, not a bespoke caregiver block.
+  - run_id: gender-caregiver-relief
+    label: Caregiver Proxy Relief
+    scenario_name: gender_caregiver_leave_relief
+    summary: Supportive caregiver-leave proxy shift relative to the observed base.
+  - run_id: gender-caregiver-shock
+    label: Caregiver Proxy Shock
+    scenario_name: gender_caregiver_leave_shock
+    summary: Adverse caregiver-leave proxy shift relative to the observed base.
+  - run_id: gender-tax-wedge-base
+    label: Tax Wedge Observed Base
+    scenario_name: gender_tax_wedge_base
+    summary: Observed/live secondary-earner tax-wedge base.
+  - run_id: gender-tax-wedge-relief
+    label: Tax Wedge Relief
+    scenario_name: gender_tax_wedge_relief
+    summary: Narrower secondary-earner tax wedge relative to the observed base.
+  - run_id: gender-tax-wedge-shock
+    label: Tax Wedge Shock
+    scenario_name: gender_tax_wedge_shock
+    summary: Wider secondary-earner tax wedge relative to the observed base.
+  - run_id: gender-mothers-paid-leave-base
+    label: Mothers Paid Leave Base
+    scenario_name: gender_mothers_paid_leave_base
+    summary: Observed/live paid-leave base with mothers/non-mothers split tracking.
+  - run_id: gender-mothers-paid-leave-relief
+    label: Mothers Paid Leave Relief
+    scenario_name: gender_mothers_paid_leave_relief
+    summary: Higher paid-leave coverage in the mothers/non-mothers prototype.
+  - run_id: gender-mothers-paid-leave-shock
+    label: Mothers Paid Leave Shock
+    scenario_name: gender_mothers_paid_leave_shock
+    summary: Lower paid-leave coverage in the mothers/non-mothers prototype.
+default_run_ids:
+  - gender-childcare-package-base
+  - gender-childcare-package-cost-relief
+  - gender-childcare-package-subsidy-relief
+  - gender-childcare-package-combined-relief
+presets:
+  - id: headline-macro
+    label: Headline Macro
+    variables:
+      - L2
+      - UR
+      - PCY
+      - GDPR
+      - PIEF
+  - id: policy-inputs
+    label: Policy Inputs
+    variables:
+      - GCCOST
+      - GCSUB
+      - GPFL
+      - GTAXWD
+  - id: mothers-split
+    label: Mothers Split
+    variables:
+      - L2M
+      - L2N
+      - L2
+      - UR
+      - GDPR
+      - PIEF
+  - id: gender-exposure
+    label: Gender Exposure
+    variables:
+      - GMOTHSHR
+      - GMWEDGE
+      - L2M
+      - L2N
+default_preset_ids:
+  - headline-macro
