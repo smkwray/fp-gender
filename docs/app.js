@@ -133,12 +133,17 @@ const state = {
   variableSearchQuery: "",
   selectedRunInfoId: "",
   equations: [],
+  runSelectExpanded: false,
 };
 
 const dom = {
   pageTitle: document.querySelector("#pageTitle"),
   pageSubtitle: document.querySelector("#pageSubtitle"),
+  runPanel: document.querySelector("#runPanel"),
+  runPanelBackdrop: document.querySelector("#runPanelBackdrop"),
   runSelect: document.querySelector("#runSelect"),
+  runSelectHint: document.querySelector("#runSelectHint"),
+  runSelectToggle: document.querySelector("#runSelectToggle"),
   presetSelect: document.querySelector("#presetSelect"),
   applyPresetButton: document.querySelector("#applyPresetButton"),
   variableSearch: document.querySelector("#variableSearch"),
@@ -223,6 +228,25 @@ function renderHeroSubtitle() {
 
 function getRunMeta(runId) {
   return state.runMeta.find((item) => item.run_id === runId) || null;
+}
+
+function getRunGroupLabel(run) {
+  return `${run?.group || ""}`.trim() || "Other";
+}
+
+function buildRunGroups(runs) {
+  const ordered = [];
+  const byLabel = new Map();
+  for (const run of runs) {
+    const label = getRunGroupLabel(run);
+    if (!byLabel.has(label)) {
+      const group = { label, runs: [] };
+      byLabel.set(label, group);
+      ordered.push(group);
+    }
+    byLabel.get(label).runs.push(run);
+  }
+  return ordered;
 }
 
 async function ensureRunsLoaded(runIds) {
@@ -342,9 +366,188 @@ function applyPresetSelection() {
   renderCharts();
 }
 
-function createChecklistItem({ checked, title, note, onToggle }) {
+function getRunDescription(run) {
+  const parts = [];
+  const summary = `${run?.summary || ""}`.trim();
+  if (summary) {
+    parts.push(summary);
+  }
+  const details = Array.isArray(run?.details) ? run.details.filter(Boolean) : [];
+  if (details.length > 0) {
+    const leadDetail = `${details[0]}`.trim();
+    if (leadDetail && !parts.includes(leadDetail)) {
+      parts.push(leadDetail);
+    }
+  }
+  const forecastStart = `${run?.forecast_start || ""}`.trim();
+  const forecastEnd = `${run?.forecast_end || ""}`.trim();
+  if (forecastStart && forecastEnd) {
+    const forecastCopy = `Forecast ${forecastStart} to ${forecastEnd}.`;
+    if (!parts.includes(forecastCopy)) {
+      parts.push(forecastCopy);
+    }
+  }
+  return parts.join(" ");
+}
+
+function getRunTooltip(run) {
+  const details = Array.isArray(run?.details) ? run.details.filter(Boolean) : [];
+  return [
+    run?.label || "",
+    `${run?.summary || ""}`.trim(),
+    ...details,
+    `${run?.forecast_start || ""}`.trim() && `${run?.forecast_end || ""}`.trim()
+      ? `Forecast ${run.forecast_start} to ${run.forecast_end}.`
+      : "",
+    run?.scenario_name ? `Scenario: ${run.scenario_name}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function getRunSelectColumnCount() {
+  if (!state.runSelectExpanded || !dom.runPanel) {
+    return 1;
+  }
+  const width = dom.runPanel.clientWidth || window.innerWidth || 0;
+  if (width >= 1180) {
+    return 3;
+  }
+  if (width >= 760) {
+    return 2;
+  }
+  return 1;
+}
+
+function estimateRunGroupWeight(group) {
+  const baseWeight = 96;
+  return group.runs.reduce((total, run) => {
+    const description = getRunDescription(run);
+    const summary = `${run?.summary || ""}`.trim();
+    return total + 68 + Math.ceil((description.length + summary.length) / 48) * 16;
+  }, baseWeight);
+}
+
+function createRunGroupSection(group) {
+  const section = document.createElement("section");
+  section.className = "run-group";
+
+  const header = document.createElement("div");
+  header.className = "run-group-header";
+
+  const titleWrap = document.createElement("div");
+  const title = document.createElement("p");
+  title.className = "run-group-title";
+  title.textContent = group.label;
+  titleWrap.appendChild(title);
+
+  const note = document.createElement("p");
+  note.className = "run-group-note";
+  note.textContent = `${group.runs.length} runs`;
+  titleWrap.appendChild(note);
+  header.appendChild(titleWrap);
+
+  const actions = document.createElement("div");
+  actions.className = "run-group-actions";
+  for (const [label, mode] of [["All", "all"], ["None", "none"]]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "run-group-action";
+    button.textContent = label;
+    button.addEventListener("click", async () => {
+      const selected = new Set(state.selectedRunIds);
+      for (const run of group.runs) {
+        if (mode === "all") {
+          selected.add(run.run_id);
+        } else {
+          selected.delete(run.run_id);
+        }
+      }
+      await applyRunSelection(selected);
+    });
+    actions.appendChild(button);
+  }
+  header.appendChild(actions);
+  section.appendChild(header);
+
+  const list = document.createElement("div");
+  list.className = "checklist checklist-group";
+  for (const run of group.runs) {
+    list.appendChild(
+      createChecklistItem({
+        checked: state.selectedRunIds.includes(run.run_id),
+        title: run.label,
+        note: getRunDescription(run),
+        tooltip: getRunTooltip(run),
+        onToggle: async (checked) => {
+          const selected = new Set(state.selectedRunIds);
+          if (checked) {
+            selected.add(run.run_id);
+          } else {
+            selected.delete(run.run_id);
+          }
+          await applyRunSelection(selected);
+        },
+      }),
+    );
+  }
+  section.appendChild(list);
+  return section;
+}
+
+function syncRunSelectExpansion() {
+  if (!dom.runPanel || !dom.runSelect || !dom.runSelectToggle || !dom.runPanelBackdrop) {
+    return;
+  }
+  document.body.classList.toggle("panel-overlay-open", state.runSelectExpanded);
+  dom.runPanel.classList.toggle("panel-card-expanded", state.runSelectExpanded);
+  dom.runSelect.classList.toggle("checklist-expanded", state.runSelectExpanded);
+  dom.runPanelBackdrop.hidden = !state.runSelectExpanded;
+  dom.runSelectToggle.textContent = state.runSelectExpanded ? "Collapse" : "Expand";
+  dom.runSelectToggle.setAttribute("aria-expanded", state.runSelectExpanded ? "true" : "false");
+}
+
+function setRunSelectExpanded(nextValue) {
+  const normalized = Boolean(nextValue);
+  const didChange = state.runSelectExpanded !== normalized;
+  state.runSelectExpanded = normalized;
+  syncRunSelectExpansion();
+  if (didChange) {
+    syncRunSelect();
+  }
+}
+
+function collapseRunSelect() {
+  if (!state.runSelectExpanded) {
+    return;
+  }
+  setRunSelectExpanded(false);
+}
+
+async function applyRunSelection(selected) {
+  state.selectedRunIds = state.runMeta
+    .map((item) => item.run_id)
+    .filter((runId) => selected.has(runId));
+  await ensureRunsLoaded(state.selectedRunIds);
+  for (const variable of state.selectedVariables) {
+    sanitizeVariableConfig(variable, state.variableConfigs.get(variable));
+  }
+  if (!state.selectedRunIds.includes(state.selectedRunInfoId)) {
+    state.selectedRunInfoId = state.selectedRunIds[0] || state.runMeta[0]?.run_id || "";
+    syncRunInfoSelect();
+  }
+  syncRunSelect();
+  renderCharts();
+  renderEquationCharts();
+  renderRunInfo();
+}
+
+function createChecklistItem({ checked, title, note, tooltip, onToggle }) {
   const label = document.createElement("label");
   label.className = "check-item";
+  if (tooltip) {
+    label.title = tooltip;
+  }
 
   const input = document.createElement("input");
   input.type = "checkbox";
@@ -373,37 +576,35 @@ function createChecklistItem({ checked, title, note, onToggle }) {
 
 function syncRunSelect() {
   dom.runSelect.innerHTML = "";
-  for (const run of state.runMeta) {
-    dom.runSelect.appendChild(
-      createChecklistItem({
-        checked: state.selectedRunIds.includes(run.run_id),
-        title: run.label,
-        note: "",
-        onToggle: async (checked) => {
-          const selected = new Set(state.selectedRunIds);
-          if (checked) {
-            selected.add(run.run_id);
-          } else {
-            selected.delete(run.run_id);
-          }
-          state.selectedRunIds = state.runMeta
-            .map((item) => item.run_id)
-            .filter((runId) => selected.has(runId));
-          await ensureRunsLoaded(state.selectedRunIds);
-          for (const variable of state.selectedVariables) {
-            sanitizeVariableConfig(variable, state.variableConfigs.get(variable));
-          }
-          if (!state.selectedRunIds.includes(state.selectedRunInfoId)) {
-            state.selectedRunInfoId = state.selectedRunIds[0] || state.runMeta[0]?.run_id || "";
-            syncRunInfoSelect();
-          }
-          syncRunSelect();
-          renderCharts();
-          renderEquationCharts();
-          renderRunInfo();
-        },
-      }),
-    );
+  const groups = buildRunGroups(state.runMeta);
+  if (state.runSelectExpanded) {
+    const columnCount = getRunSelectColumnCount();
+    dom.runSelect.style.setProperty("--run-select-columns", `${columnCount}`);
+    const columns = Array.from({ length: columnCount }, () => {
+      const column = document.createElement("div");
+      column.className = "run-group-column";
+      return column;
+    });
+    const weights = columns.map(() => 0);
+    for (const group of groups) {
+      let targetIndex = 0;
+      for (let index = 1; index < columns.length; index += 1) {
+        if (weights[index] < weights[targetIndex]) {
+          targetIndex = index;
+        }
+      }
+      columns[targetIndex].appendChild(createRunGroupSection(group));
+      weights[targetIndex] += estimateRunGroupWeight(group);
+    }
+    for (const column of columns) {
+      dom.runSelect.appendChild(column);
+    }
+    return;
+  }
+
+  dom.runSelect.style.removeProperty("--run-select-columns");
+  for (const group of groups) {
+    dom.runSelect.appendChild(createRunGroupSection(group));
   }
 }
 
@@ -434,12 +635,17 @@ function syncPresetSelect() {
 
 function syncRunInfoSelect() {
   dom.runInfoSelect.innerHTML = "";
-  for (const run of state.runMeta) {
-    const option = document.createElement("option");
-    option.value = run.run_id;
-    option.textContent = run.label;
-    option.selected = run.run_id === state.selectedRunInfoId;
-    dom.runInfoSelect.appendChild(option);
+  for (const group of buildRunGroups(state.runMeta)) {
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = group.label;
+    for (const run of group.runs) {
+      const option = document.createElement("option");
+      option.value = run.run_id;
+      option.textContent = run.label;
+      option.selected = run.run_id === state.selectedRunInfoId;
+      optgroup.appendChild(option);
+    }
+    dom.runInfoSelect.appendChild(optgroup);
   }
 }
 
@@ -617,6 +823,7 @@ function renderRunInfo() {
 
   card.innerHTML = `
     <p class="run-info-title">${run.label}</p>
+    ${run.group ? `<p class="run-info-text">Group: ${run.group}</p>` : ""}
     <p class="run-info-text">Scenario: ${run.scenario_name || "Unknown"}</p>
     <p class="run-info-text">Forecast: ${run.forecast_start || "?"} to ${run.forecast_end || "?"}</p>
     ${run.summary ? `<p class="run-info-text">${run.summary}</p>` : ""}
@@ -1422,6 +1629,7 @@ async function initialize() {
   dom.pageTitle.textContent = manifest.title || "FP Gender Runs Explorer";
   renderHeroSubtitle();
 
+  syncRunSelectExpansion();
   syncRunSelect();
   syncPresetSelect();
   syncVariableSelect();
@@ -1434,6 +1642,40 @@ async function initialize() {
   renderDictionary();
   renderEquationExplorer();
 }
+
+dom.runSelectToggle?.addEventListener("click", () => {
+  setRunSelectExpanded(!state.runSelectExpanded);
+});
+
+dom.runPanelBackdrop?.addEventListener("click", () => {
+  collapseRunSelect();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    collapseRunSelect();
+  }
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!state.runSelectExpanded || !dom.runPanel || !dom.runSelectToggle) {
+    return;
+  }
+  const target = event.target;
+  if (!(target instanceof Node)) {
+    return;
+  }
+  if (dom.runPanel.contains(target) || dom.runSelectToggle.contains(target)) {
+    return;
+  }
+  collapseRunSelect();
+});
+
+window.addEventListener("resize", () => {
+  if (state.runSelectExpanded) {
+    syncRunSelect();
+  }
+});
 
 dom.runInfoSelect.addEventListener("change", () => {
   state.selectedRunInfoId = dom.runInfoSelect.value;
